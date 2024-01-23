@@ -1,4 +1,7 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, FirebaseApp, getApp } from "firebase/app";
+import "firebase/auth";
+
+export let app: FirebaseApp;
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -9,6 +12,13 @@ const firebaseConfig = {
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_ID,
 };
+
+// 처음 앱을 가져올 때 앱이 initialize되었다면 기존에 초기화된 앱을 가져오고, 그게 아니면 초기화하기
+try {
+  app = getApp("app");
+} catch (e) {
+  app = initializeApp(firebaseConfig, "app");
+}
 
 // Initialize Firebase
 const firebase = initializeApp(firebaseConfig);
