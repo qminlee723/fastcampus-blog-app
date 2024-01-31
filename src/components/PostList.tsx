@@ -1,5 +1,12 @@
 import AuthContext from "context/AuthContext";
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { db } from "firebaseApp";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -31,9 +38,12 @@ export default function PostList({ hasNavigation = true }) {
   const params = useParams();
 
   const getPosts = async () => {
-    const datas = await getDocs(collection(db, "posts"));
     // 초기화
     setPosts([]);
+    let postsRef = collection(db, "posts");
+    let postsQuery = query(postsRef, orderBy("createdAt", "desc"));
+
+    const datas = await getDocs(postsQuery);
 
     datas?.forEach((doc) => {
       const dataObj = { ...doc.data(), id: doc.id };
