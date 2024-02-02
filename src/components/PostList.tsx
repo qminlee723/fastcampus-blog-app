@@ -1,41 +1,45 @@
 import AuthContext from "context/AuthContext";
 import {
+  DocumentData,
+  Query,
   collection,
   deleteDoc,
   doc,
   getDocs,
   orderBy,
   query,
+  where,
 } from "firebase/firestore";
 import { db } from "firebaseApp";
 import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 interface PostListProps {
   hasNavigation?: boolean;
+  defaultTab?: TabType;
 }
 
-type TabType = "all" | "my";
-
 export interface PostProps {
-  id: string;
+  id?: string;
   title: string;
   email: string;
   summary: string;
   content: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
   uid: string;
 }
 
-export default function PostList({ hasNavigation = true }) {
-  const [activeTab, setActiveTab] = useState<TabType>("all");
+type TabType = "all" | "my";
+
+export default function PostList({
+  hasNavigation = true,
+  defaultTab = "all",
+}: PostListProps) {
+  const [activeTab, setActiveTab] = useState<TabType>(defaultTab);
   const [posts, setPosts] = useState<PostProps[]>([]);
   const { user } = useContext(AuthContext);
-
-  const navigate = useNavigate();
-  const params = useParams();
 
   const getPosts = async () => {
     // 초기화
@@ -43,8 +47,25 @@ export default function PostList({ hasNavigation = true }) {
     let postsRef = collection(db, "posts");
     let postsQuery = query(postsRef, orderBy("createdAt", "desc"));
 
+    if (activeTab === "my" && user) {
+      // 나의 글만 필터링
+      postsQuery = query(
+        postsRef,
+        where("uid", "==", user.uid),
+        orderBy("createdAt", "desc")
+      );
+    } else if (activeTab === "all") {
+      // 모든 글 보여주기
+      postsQuery = query(postsRef, orderBy("createdAt", "desc"));
+    } else {
+      // 카테고리 글 보여주기
+      postsQuery = query(
+        postsRef,
+        where("category", "==", activeTab),
+        orderBy("createdAt", "desc")
+      );
+    }
     const datas = await getDocs(postsQuery);
-
     datas?.forEach((doc) => {
       const dataObj = { ...doc.data(), id: doc.id };
       setPosts((prev) => [...prev, dataObj as PostProps]);
@@ -62,7 +83,7 @@ export default function PostList({ hasNavigation = true }) {
 
   useEffect(() => {
     getPosts();
-  }, []);
+  }, [activeTab]);
 
   return (
     <>
