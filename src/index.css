@@ -13,6 +13,7 @@ code {
 }
 
 /* header */
+
 header {
   display: flex;
   justify-content: space-between;
@@ -41,7 +42,6 @@ header a:hover {
 }
 
 /* footer */
-
 footer {
   background-color: #f2f2f2;
   min-height: 40px;
@@ -55,7 +55,6 @@ footer {
 }
 
 footer a {
-  margin: 0px 10px;
   text-decoration: none;
   color: gray;
 }
@@ -86,7 +85,7 @@ footer a:hover {
 .post__list,
 .post__detail {
   min-height: 90vh;
-  padding: 20px 40px;
+  padding: 20px;
   text-align: center;
   max-width: 680px;
   margin: 0 auto;
@@ -110,7 +109,7 @@ footer a:hover {
 .post__profile {
   width: 36px;
   height: 36px;
-  background-color: #f2f2f2;
+  background: #f2f2f2;
   border-radius: 50%;
 }
 
@@ -130,10 +129,6 @@ footer a:hover {
   font-size: 16px;
 }
 
-.post__text--pre-wrap {
-  white-space: pre-wrap;
-}
-
 .post__list a {
   text-decoration: none;
   color: black;
@@ -147,15 +142,13 @@ footer a:hover {
   color: gray;
 }
 
-.post__delete:hover,
-.post__delete:focus,
-.post__delete a:hover,
-.post__delete a:focus {
-  color: black;
-}
-
 .post__delete {
   cursor: pointer;
+}
+
+.post__delete:hover,
+.post__delete:focus {
+  color: black;
 }
 
 .post__edit:hover,
@@ -170,10 +163,17 @@ footer a:hover {
   color: gray;
 }
 
+.post__no-post {
+  padding: 24px;
+  text-align: center;
+  color: gray;
+  border: 1px solid #f2f2f2;
+  border-radius: 20px;
+}
+
 /* post detail */
 
-.post__detail,
-.post__title {
+.post__detail .post__title {
   font-size: 36px;
   line-height: 40px;
 }
@@ -189,17 +189,21 @@ footer a:hover {
   padding: 10px 0px;
 }
 
-.post__detail,
-.post__text {
+.post__detail .post__text {
   padding: 20px 0px;
 }
 
-.post__no-post {
-  padding: 24px;
-  text-align: center;
+.post__text--pre-wrap {
+  white-space: pre-wrap;
+}
+
+.post__category {
   color: gray;
-  border: 1px solid #f2f2f2;
-  border-radius: 20px;
+  border: 1px solid lightgray;
+  backgroud: #f2f2f2;
+  padding: 0px 4px;
+  border-radius: 10px;
+  font-size: 12px;
 }
 
 /* profile */
@@ -210,7 +214,7 @@ footer a:hover {
   align-items: center;
   font-size: 18px;
   margin: 0 auto;
-  max-width: 680;
+  max-width: 680px;
   text-align: left;
   line-height: 24px;
   justify-content: space-between;
@@ -246,7 +250,7 @@ footer a:hover {
   text-decoration: underline;
 }
 
-.profil__logout:hover,
+.profile__logout:hover,
 .profile__logout:focus {
   color: black;
 }
@@ -382,7 +386,6 @@ input:checked + .carousel__slide-container .nav label {
 }
 
 /* form */
-
 .form {
   margin: 0 auto;
   max-width: 680px;
@@ -468,9 +471,19 @@ input:checked + .carousel__slide-container .nav label {
   color: red;
 }
 
+.form select {
+  border: 1px solid lightgray;
+  max-width: 680px;
+  height: 40px;
+  padding: 0px 20px;
+  font-size: 16px;
+  border-radius: 0.3rem;
+}
+
 /* loader */
+
 .loader {
-  widht: 48px;
+  width: 48px;
   height: 48px;
   position: absolute;
   left: 0;

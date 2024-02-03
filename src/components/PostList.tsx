@@ -1,7 +1,5 @@
 import AuthContext from "context/AuthContext";
 import {
-  DocumentData,
-  Query,
   collection,
   deleteDoc,
   doc,
@@ -17,7 +15,7 @@ import { toast } from "react-toastify";
 
 interface PostListProps {
   hasNavigation?: boolean;
-  defaultTab?: TabType;
+  defaultTab?: TabType | CategoryType;
 }
 
 export interface PostProps {
@@ -29,20 +27,31 @@ export interface PostProps {
   createdAt: string;
   updatedAt?: string;
   uid: string;
+  category?: CategoryType;
 }
 
 type TabType = "all" | "my";
+
+export type CategoryType = "Frontend" | "Backend" | "Web" | "Native";
+export const CATEGORIES: CategoryType[] = [
+  "Frontend",
+  "Backend",
+  "Web",
+  "Native",
+];
 
 export default function PostList({
   hasNavigation = true,
   defaultTab = "all",
 }: PostListProps) {
-  const [activeTab, setActiveTab] = useState<TabType>(defaultTab);
+  const [activeTab, setActiveTab] = useState<TabType | CategoryType>(
+    defaultTab
+  );
   const [posts, setPosts] = useState<PostProps[]>([]);
   const { user } = useContext(AuthContext);
 
   const getPosts = async () => {
-    // 초기화
+    // posts 초기화
     setPosts([]);
     let postsRef = collection(db, "posts");
     let postsQuery = query(postsRef, orderBy("createdAt", "desc"));
@@ -52,7 +61,7 @@ export default function PostList({
       postsQuery = query(
         postsRef,
         where("uid", "==", user.uid),
-        orderBy("createdAt", "desc")
+        orderBy("createdAt", "asc")
       );
     } else if (activeTab === "all") {
       // 모든 글 보여주기
@@ -73,16 +82,18 @@ export default function PostList({
   };
 
   const handleDelete = async (id: string) => {
-    const confirm = window.confirm("해당 게시글을 삭제하시겠습니까");
+    const confirm = window.confirm("해당 게시글을 삭제하시겠습니까?");
     if (confirm && id) {
       await deleteDoc(doc(db, "posts", id));
+
       toast.success("게시글을 삭제했습니다.");
-      getPosts();
+      getPosts(); // 변경된 post 리스트를 다시 가져옴
     }
   };
 
   useEffect(() => {
     getPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   return (
@@ -103,11 +114,23 @@ export default function PostList({
           >
             나의 글
           </div>
+          {CATEGORIES?.map((category) => (
+            <div
+              key={category}
+              role="presentation"
+              onClick={() => setActiveTab(category)}
+              className={
+                activeTab === category ? "post__navigation--active" : ""
+              }
+            >
+              {category}
+            </div>
+          ))}
         </div>
       )}
       <div className="post__list">
-        {posts.length > 0 ? (
-          posts?.map((post, index) => (
+        {posts?.length > 0 ? (
+          posts?.map((post) => (
             <div key={post?.id} className="post__box">
               <Link to={`/posts/${post?.id}`}>
                 <div className="post__profile-box">
@@ -127,7 +150,6 @@ export default function PostList({
                   >
                     삭제
                   </div>
-
                   <Link to={`/posts/edit/${post?.id}`} className="post__edit">
                     수정
                   </Link>
