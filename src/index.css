@@ -633,8 +633,14 @@ input:checked + .carousel__slide-container .nav label {
 .dark .post__email,
 .dark .post__date,
 .dark .form__block,
-.dark .comments__list {
+.dark .comment__date,
+.dark .comment__delete {
   color: lightgray;
+}
+
+.dark .comment__delete:hover,
+.dark .comment__delete:focus {
+  color: white;
 }
 
 .dark .form__error {
