@@ -27,7 +27,7 @@ export default function Comments() {
             onChange={onChange}
           />
         </div>
-        <div className="form__block">
+        <div className="form__block form__block-reverse">
           <input type="submit" value="입력" className="form__btn-submit" />
         </div>
       </form>
